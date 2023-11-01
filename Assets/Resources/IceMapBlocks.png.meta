@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bbac087e94fe10149881cadbdfd0a4f5
+guid: c9b2acecf54eefb4a9c74d7ccb4560ad
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,85 +110,176 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Tiles_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 40
-        width: 40
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0e5d2cf44223f3a4a8bb636ae5233e18
-      internalID: -1486585928
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_1
-      rect:
-        serializedVersion: 2
-        x: 40
-        y: 40
-        width: 40
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 12f9ef182e50d5143b5281acd22aaf6b
-      internalID: -145417251
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tiles_2
+      name: IceMapTiles_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 40
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2858}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -20, y: -35}
+        - {x: -20, y: 5}
+        - {x: 20, y: 5}
+        - {x: 20, y: -35}
       tessellationDetail: 0
       bones: []
-      spriteID: 2a25000f7a4813b4c8c0abf2add8be42
-      internalID: -1289831893
+      spriteID: fe531a077ea5d4143b7e40224539bda5
+      internalID: -1365468465
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tiles_3
+      name: IceMapTiles_1
       rect:
         serializedVersion: 2
         x: 40
         y: 0
         width: 40
-        height: 40
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2858}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
+      physicsShape:
+      - - {x: -20, y: -35}
+        - {x: -20, y: 5}
+        - {x: 20, y: 5}
+        - {x: 20, y: -35}
       tessellationDetail: 0
       bones: []
-      spriteID: cc85f4bc05b7c9e4bb18df263c74c540
-      internalID: -1573025864
+      spriteID: a9c6d4d0f948c6342a8571241a3c2b13
+      internalID: -1254733714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IceMapTiles_2
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 0
+        width: 40
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2858}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -20, y: -35}
+        - {x: -20, y: 5}
+        - {x: 20, y: 5}
+        - {x: 20, y: -35}
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1202714fc07a464b8f7f97c8bfdf6e2
+      internalID: 1149437251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IceMapTiles_3
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 0
+        width: 40
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2858}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -20, y: -35}
+        - {x: -20, y: 5}
+        - {x: 20, y: 5}
+        - {x: 20, y: -35}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 086635e74c1409644968728a91ece800
+      internalID: -1316845191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IceMapTiles_4
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 40
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2858}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -20, y: -35}
+        - {x: -20, y: 5}
+        - {x: 20, y: 5}
+        - {x: 20, y: -35}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4af388945609a734ba8977abef76f107
+      internalID: -520060256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IceMapTiles_5
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 0
+        width: 40
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2858}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -20, y: -35}
+        - {x: -20, y: 5}
+        - {x: 20, y: 5}
+        - {x: 20, y: -35}
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd64905f8bdf09240a98f3712df2e568
+      internalID: 1269346125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: IceMapTiles_6
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 40
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2858}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -20, y: -35}
+        - {x: -20, y: 5}
+        - {x: 20, y: 5}
+        - {x: 20, y: -35}
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9d01fe63e974d648a1e3bc95e8154f0
+      internalID: -2062902476
       vertices: []
       indices: 
       edges: []
@@ -204,10 +295,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Tiles_0: -1486585928
-      Tiles_1: -145417251
-      Tiles_2: -1289831893
-      Tiles_3: -1573025864
+      IceMapTiles_0: -1365468465
+      IceMapTiles_1: -1254733714
+      IceMapTiles_2: 1149437251
+      IceMapTiles_3: -1316845191
+      IceMapTiles_4: -520060256
+      IceMapTiles_5: 1269346125
+      IceMapTiles_6: -2062902476
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
