@@ -2,33 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 public class SetBalloon : MonoBehaviour
 {
     List<WaterBalloon> waterBalloonList;
     Status _status;
     [SerializeField] GameObject WaterBalloon;
-    [SerializeField] AnimatedTile WaterBalloonTile;
+
+    GameObject mapBalloons;
     private void Awake()
     {
-        waterBalloonList = new List<WaterBalloon> ();
-        _status = GetComponent<Status> ();
+        mapBalloons = new GameObject();
+        mapBalloons.name = "mapBalloons";
+
+        waterBalloonList = new List<WaterBalloon>();
+        _status = GetComponent<Status>();
     }
     public void InstallBalloon()
     {
         if (waterBalloonList.Count >= _status.BalloonCount) return;
-        if (!GameManager.instance.BlockManager.CanInstallThere(transform.position)) return;
+        
+        var setPos = GameManager.instance.BlockManager.GetObjectSetPosition(transform.position, 0, -0.25f);
 
+        var blockData = GameManager.instance.BlockManager.GetBlockData(setPos);
+        if(blockData != null)
+        {
+            if (blockData.GetBlock() == null)
+            {
+                var balloon = Instantiate(WaterBalloon, setPos, Quaternion.identity, mapBalloons.transform);
+                blockData.SetBlock(balloon.GetComponent<WaterBalloon>());
+                balloon.GetComponent<WaterBalloon>().Installed(GetComponent<Player>(), _status.BoomLength);
+                balloon.GetComponent<Renderer>().sortingOrder = GameManager.instance.BlockManager.GetOrderInLayer(setPos);
 
-        GameManager.instance.BlockManager.SetObject(WaterBalloonTile, transform.position);
-        Debug.Log("물풍선 설치");
-        //GameObject InstantiatedWaterBalloon = Instantiate(WaterBalloon, GameManager.instance.BlockManager.GetVector3IntPosition(transform.position + new Vector3(0,0,0)), Quaternion.identity);
-        //waterBalloonList.Add(InstantiatedWaterBalloon.GetComponent<WaterBalloon>());
-        //InstantiatedWaterBalloon.GetComponent<WaterBalloon>().Installed(GetComponent<Player>());
+                waterBalloonList.Add(balloon.GetComponent<WaterBalloon>());
+                //Debug.Log("설치" + blockData.GetPosition() + "/" + setPos);
+            }
+        }
     }
     public void RemoveBalloon(WaterBalloon balloon)
     {
         waterBalloonList.Remove(balloon);
-        balloon.Remove();
     }
 }
