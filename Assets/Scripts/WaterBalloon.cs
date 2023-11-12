@@ -1,25 +1,41 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineInternal;
 
-public class WaterBalloon : MonoBehaviour
+public class WaterBalloon : Block
 {
     Player Installer;
+    int Length;
+
     bool Boomed = false;
-    float time = 3f;
-    public void Installed(Player installer)
+    float time = 2f;
+    [SerializeField] GameObject boomEffect;
+    public void Installed(Player installer, int length)
     {
+        GetComponent<Collider2D>().isTrigger = true;
         Installer = installer;
-        StartCoroutine(CountDown());
+        Length = length;
+        StartCoroutine("CountDown");
+    }
+    public override void BlockBreak()
+    {
+        BoomRequest();
+
+        Remove();
+    }
+    public void BoomRequest()
+    {
+        if (!Boomed)
+        {
+            Boomed = true;
+            Boom();
+        }
     }
     public void Boom()
     {
-        Boomed = true;
         Installer.GetComponent<SetBalloon>().RemoveBalloon(this);
-    }
-    public void Remove()
-    {
-        gameObject.SetActive(false);
+        Instantiate(boomEffect, transform.position, Quaternion.identity).GetComponent<Boom>().BoomStart(this, Length);
     }
     IEnumerator CountDown()
     {
@@ -31,4 +47,10 @@ public class WaterBalloon : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.tag == "Player")
+            GetComponent<Collider2D>().isTrigger = false;
+    }
+    
 }

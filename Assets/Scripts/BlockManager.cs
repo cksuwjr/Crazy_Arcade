@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -8,81 +9,157 @@ using UnityEngine.Tilemaps;
 public class BlockManager : MonoBehaviour
 {
     [SerializeField] Tilemap Ground;
-    [SerializeField] List<Tile> groundTiles = new List<Tile>();
 
     [SerializeField] Tilemap Blocks;
-    [SerializeField] List<Tile> blockTiles = new List<Tile>();
-    [SerializeField] List<Tile> unbreakableTiles = new List<Tile>();
 
+    [SerializeField] GameObject blockPrefab;
+
+    int minOrderinLayer;
+    public Vector2 mapStartPoint;
+    public Vector3 mapMax;
+    public Vector3 mapMin;
+
+
+    public Dictionary<Vector3Int, GroundData> GroundDatas;
+    public class GroundData
+    {
+        TileBase blockTile;
+        Block block;
+        Vector3 position;
+        public GroundData()
+        {
+            this.blockTile = null;
+            this.block = null;
+            this.position = Vector3.zero;
+        }
+        public GroundData(TileBase tile, Block block, Vector3 position)
+        {
+            this.blockTile = tile;
+            this.block = block;
+            this.position = position;
+        }
+        public void SetGroundData(TileBase tile, Block block, Vector3 position)
+        {
+            this.blockTile = tile;
+            this.block = block;
+            this.position = position;
+        }
+        public Block GetBlock()
+        {
+            return block;
+        }
+        public void SetBlock(Block block)
+        {
+            this.block = block;
+        }
+        public Vector3 GetPosition()
+        {
+            return position;
+        }
+    }
     private void Awake()
     {
-        if(Ground == null)
-            Ground = GameObject.Find("Grid").transform.Find("Ground").GetComponent<Tilemap>();
-        if(Blocks == null)
-            Blocks = GameObject.Find("Grid").transform.Find("Blocks").GetComponent<Tilemap>();
+        if(Ground == null) Ground = GameObject.Find("Grid").transform.Find("Ground").GetComponent<Tilemap>();
+        if(Blocks == null) Blocks = GameObject.Find("Grid").transform.Find("Blocks").GetComponent<Tilemap>();
+
+        GroundDatas = new Dictionary<Vector3Int, GroundData>();
+
+        SetMapMaxMin();
 
         AssignGround();
-        AssignUnbreakable();
         AssignBlock();
+        Ground.GetComponent<Renderer>().sortingOrder = minOrderinLayer - 10;
+
+    }
+
+    private void SetMapMaxMin()
+    {
+        mapStartPoint = new Vector2(Ground.cellBounds.x, Ground.cellBounds.y);
+        mapMin = new Vector2(Ground.cellBounds.xMin, Ground.cellBounds.yMin);
+        mapMax = new Vector2(Ground.cellBounds.xMax, Ground.cellBounds.yMax); 
     }
 
     void AssignGround()
     {
-        if (groundTiles.Count == 0) return;
-
-        int n = 0;
-        for (int i = 0; i < 15; i++)
-            for(int j = 0; j < 15; j++) { 
-                Ground.SetTile(new Vector3Int(i, j), groundTiles[n]);
-                if (++n == groundTiles.Count) n = 0;
-            }
-    }
-    private void AssignUnbreakable()
-    {
-        if (unbreakableTiles.Count == 0) return;
-
-        for (int i = 0; i < 15; i++)
-            for (int j = 0; j < 15; j++)
+        BoundsInt bounds = Ground.cellBounds;
+        TileBase[] allTiles = Ground.GetTilesBlock(bounds);
+        for (int x = 0; x < bounds.size.x; x++)
+        {
+            for (int y = 0; y < bounds.size.y; y++)
             {
-                int n = UnityEngine.Random.Range(0, 100);
-                if(n < unbreakableTiles.Count)
-                    Blocks.SetTile(new Vector3Int(i, j), unbreakableTiles[n]);
+                TileBase tile = allTiles[x + y * bounds.size.x];
+                if (tile == null) continue;
+
+                Vector3Int Point = Ground.WorldToCell(new Vector3(x + bounds.x, y + bounds.y));
+
+                TileData tileData = new TileData();
+                tile.GetTileData(Point, Blocks, ref tileData);
+
+                GroundDatas.Add(Point, new GroundData());
             }
+        }
     }
 
     void AssignBlock()
     {
-        if (blockTiles.Count == 0) return;
+        var mapBlocks = new GameObject();
+        mapBlocks.name = "mapBlocks";
 
-        int n = 0;
-        for (int i = 0; i < 15; i++)
-            for (int j = 0; j < 15; j++)
+        BoundsInt bounds = Blocks.cellBounds;
+        TileBase[] allTiles = Blocks.GetTilesBlock(bounds);
+        for (int x = 0; x < bounds.size.x; x++)
+        {
+            for (int y = 0; y < bounds.size.y; y++)
             {
-                if (Ground.GetTile(new Vector3Int(i, j)) == null) continue;
-                if (Blocks.GetTile(new Vector3Int(i, j)) != null) continue;
 
-                int c = UnityEngine.Random.Range(0, 101);
+                TileBase tile = allTiles[x + y * bounds.size.x];
+                if (tile == null) continue;
 
-                if(c <= 50)
-                    Blocks.SetTile(new Vector3Int(i, j), blockTiles[n]);
+                Vector3Int Point = Blocks.WorldToCell(new Vector3(x + bounds.x, y + bounds.y));
 
+                TileData tileData = new TileData();
+                tile.GetTileData(Point, Blocks, ref tileData);
 
-                if (++n == blockTiles.Count) n = 0;
+                GameObject block = Instantiate(blockPrefab, Point + Blocks.tileAnchor, Quaternion.identity, mapBlocks.transform);
+
+                SpriteRenderer sr = block.GetComponent<SpriteRenderer>();
+                sr.sprite = tileData.sprite;
+                sr.sortingOrder = -Point.y;
+
+                Block bc = block.AddComponent<Block>();
+                bc.SetPosition(Point);
+                bc.breakable = Blocks.GetTile<BlockTile>(Point).breakable;
+                //Debug.Log(Blocks.GetTile<BlockTile>(Point).breakable);
+
+                if (UnityEngine.Random.Range(0, 101) < 30f)
+                    bc.SetInnerItem(GameManager.instance.ItemManager.GetRandomItemInfo());
+
+                if(minOrderinLayer > sr.sortingOrder)
+                    minOrderinLayer = sr.sortingOrder;
+
+                if (GroundDatas.ContainsKey(Point))
+                    GroundDatas[Point].SetGroundData(tile, bc, Point + Blocks.tileAnchor);
             }
+        }
+        Blocks.ClearAllTiles();
     }
-
-    public bool CanInstallThere(Vector3 pos)
+    public Vector3 GetObjectSetPosition(Vector3 position, float xAdjust = 0, float yAdjust = 0)
     {
-        var newPosition = Blocks.WorldToCell(pos);
-
-        if (Ground.GetTile(newPosition) == null) return false;
-        if (Blocks.GetTile(newPosition) != null) return false;
-
-        return true;
+        return Blocks.WorldToCell(new Vector3(Mathf.RoundToInt(position.x + xAdjust - Blocks.tileAnchor.x), Mathf.RoundToInt(position.y + yAdjust - Blocks.tileAnchor.y))) + Blocks.tileAnchor;
     }
-
-    public void SetObject(AnimatedTile tileObject, Vector3 pos)
+    public int GetOrderInLayer(Vector3 position)
     {
-        Blocks.SetTile(Blocks.WorldToCell(pos), tileObject);
+        return -Blocks.WorldToCell(position).y;
     }
+    public GroundData GetBlockData(Vector3 position)
+    {
+        //Debug.Log(position);
+        var pos = Blocks.WorldToCell(position);
+        //Debug.Log(pos);
+        if (GroundDatas.ContainsKey(pos))
+            return GroundDatas[pos];
+
+        return null;
+    }
+
 }

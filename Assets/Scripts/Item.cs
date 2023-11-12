@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class Item : Block
 {
-    ItemInfo itemInfo;
     SpriteRenderer ImageSR;
     SpriteRenderer EffectSR;
     private void Awake()
@@ -18,13 +17,27 @@ public class Item : MonoBehaviour
         ImageSR.sprite = info.ItemSprite;
         EffectSR.sprite = info.ItemEffectSprite;
     }
+
+    public override void BlockBreak()
+    {
+        if (!gameObject.activeSelf) return;
+        Remove();
+    }
+    public override void Remove()
+    {
+        var block = GameManager.instance.BlockManager.GetBlockData(position);
+        if (block != null)
+            block.SetBlock(null);
+
+        gameObject.SetActive(false);
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player") {
             collision.GetComponent<Status>().Speed += itemInfo.Speed;
             collision.GetComponent<Status>().BoomLength += itemInfo.BoomLength;
             collision.GetComponent<Status>().BalloonCount += itemInfo.BalloonCount;
-            gameObject.SetActive(false);
+            Remove();
         }
     }
 }
